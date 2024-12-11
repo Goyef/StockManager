@@ -7,7 +7,6 @@ export async function GetAllUsers(): Promise<User[]> {
         const users = await prisma.user.findMany();
         return users;
     } catch (error) {
-        console.log(error);
         throw new Error("Failed to fetch users");
     }
 }

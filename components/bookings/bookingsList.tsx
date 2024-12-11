@@ -1,108 +1,110 @@
-// "use client";
-
-// import { useState } from "react";
-// import { Booking } from "@prisma/client";
-// import { useQuery } from "@tanstack/react-query";
-
-// const BookingList = () => {
-
-//   const { data: bookings, isLoading, error, refetch } = useQuery<Booking[], Error>({
-//     queryKey: ["bookings"],
-//     queryFn: () =>
-//       fetch("/api/bookings").then((res) => res.json()),
-//   });
-
-//   if (isLoading) {
-//     return <p>Loading...</p>;
-//   }
-
-//   if (error) {
-//     return <p>Error: {error.message}</p>;
-//   }
-
-//   return (
-//     <div>
-//       <h1>Users List</h1>
-
-//       <table>
-//         <thead>
-//           <tr>
-//             <th>ID</th>
-//             <th>Name</th>
-//             <th>Email</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {bookings && bookings.map((booking) => (
-//             <tr key={booking.id}>
-//               <td>{booking.apartmentId}</td>
-//               <td>{booking.userId}</td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default BookingList;
-
-import { useQuery } from "@tanstack/react-query";
+import React, { forwardRef, useImperativeHandle } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Booking, User, Apartment } from "@prisma/client";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
+import { Button } from "../ui/button";
+import { Pencil, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export type BookingWithRelations = Booking & {
-    user: User;
-    apartment: Apartment;
+  user: User;
+  apartment: Apartment;
 };
 
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-    
-export default function BookingList() {
+export type BookingListRef = {
+  refresh: () => void;
+};
 
-    const { data: bookings, isLoading, error, refetch } = useQuery<BookingWithRelations[], Error>({
-        queryKey: ["bookings"],
-        queryFn: () =>
-        fetch("/api/bookings").then((res) => res.json()),
-    });
+const BookingList = forwardRef<BookingListRef>((_, ref) => {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-    if (isLoading) {
-        return <p>Loading...</p>;
-    }
+  // Récupération des réservations
+  const { data: bookings, isLoading, error, refetch } = useQuery<BookingWithRelations[], Error>({
+    queryKey: ["bookings"],
+    queryFn: () => fetch("/api/bookings").then((res) => res.json()),
+  });
 
-    if (error) {
-        return <p>Error: {error.message}</p>;
-    }
+  // Mutation pour supprimer une réservation
+  const deleteBookingMutation = useMutation({
+    mutationFn: async (bookingId: string) => {
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de la réservation.");
+      }
+    },
+    onSuccess: () => {
+      // Rafraîchir la liste des réservations après la suppression
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      toast({
+        title: 'Success',
+        description: 'Réservation supprimée',
+        variant: 'default',
+      });
+    },
+  });
 
-    return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Utilisateur liée</TableHead>
-            <TableHead>Appartement</TableHead>
-            <TableHead>Début de la réservation</TableHead>
-            <TableHead>Fin de la réservation</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {bookings?.map((booking) => (
-            <TableRow key={booking.id}>
-              <TableCell>{booking.user.name}</TableCell>
-              <TableCell>{booking.apartment.name}</TableCell>
-              <TableCell>{booking.startDate.toLocaleString()}</TableCell>
-              <TableCell>{booking.endDate.toLocaleString()}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    )
+  // Expose la méthode `refresh` au composant parent
+  useImperativeHandle(ref, () => ({
+    refresh: refetch,
+  }));
+
+  if (isLoading) {
+    return <p>Loading...</p>;
   }
-  
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Utilisateur liée</TableHead>
+          <TableHead>Appartement</TableHead>
+          <TableHead>Début de la réservation</TableHead>
+          <TableHead>Fin de la réservation</TableHead>
+          <TableHead>Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {bookings?.map((booking) => (
+          <TableRow key={booking.id}>
+            <TableCell>{booking.user.name}</TableCell>
+            <TableCell>{booking.apartment.name}</TableCell>
+            <TableCell>{new Date(booking.startDate).toLocaleString()}</TableCell>
+            <TableCell>{new Date(booking.endDate).toLocaleString()}</TableCell>
+            <TableCell>
+              <div className="flex gap-3">
+                <Button variant="outline" size="icon">
+                  <Pencil />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => deleteBookingMutation.mutate(booking.id)}
+                >
+                  <Trash2 className="text-destructive" />
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+});
+
+BookingList.displayName = "BookingList";
+
+export default BookingList;

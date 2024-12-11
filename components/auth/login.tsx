@@ -9,9 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { authUserByEmailAndPassword } from '@/services/authService';
-import { redirectUserAfterLogin } from '@/app/actions';
 import { useRouter } from "next/navigation";
-import { revalidatePath } from 'next/cache';
 import { handleRevalidate } from './actions';
 
 export default function Login() {
