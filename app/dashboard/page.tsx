@@ -1,5 +1,6 @@
 "use client"
 
+import BookingsList from "@/components/bookings/bookingsList"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import {
   Breadcrumb,
@@ -9,12 +10,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import UsersList from "@/components/users/userList"
 import { useAuth } from "@/context/AuthContext";
 
 export default function Page() {
@@ -40,12 +43,16 @@ export default function Page() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+
+          <Card className="border-none">
+            <CardHeader>
+              <CardTitle>Réservations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <BookingsList />
+            </CardContent>
+          </Card>
+
         </div>
       </SidebarInset>
     </SidebarProvider>
