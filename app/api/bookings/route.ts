@@ -14,14 +14,14 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const newUser = await CreateBooking({ 
+    const newBooking = await CreateBooking({ 
       startDate: body.startDate, 
       endDate: body.endDate,
       apartmentId: body.apartmentId,
       userId: body.userId,
     });
 
-    return NextResponse.json(newUser, { status: 201 });
+    return NextResponse.json(newBooking, { status: 201 });
   } catch (error) {
     console.error("Error creating booking:", error);
     return NextResponse.json({ error: "Failed to create booking" }, { status: 500 });
