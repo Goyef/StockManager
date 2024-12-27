@@ -32,7 +32,6 @@ export const signupUserByEmailAndPassword = async (
   });
 
   if (error) return false;
-
   return true;
 };
 
