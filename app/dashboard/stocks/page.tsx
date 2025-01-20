@@ -30,16 +30,15 @@ import { BookingForm, BookingFormSchema } from "@/components/bookings/bookingFor
 import { cn } from "@/lib/utils"
 import { z } from "zod"
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from "next/navigation"
+import StockList, { StockListRef } from "@/components/stocks/stocksList"
 
 export default function Page() {
-  const router = useRouter()
   const { user, loading } = useAuth()
   const { toast } = useToast();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const bookingListRef = useRef<BookingListRef>(null);
+  const stockListRef = useRef<StockListRef>(null);
 
   const handleNewReservation = () => {
     setIsDialogOpen(true)
@@ -61,7 +60,7 @@ export default function Page() {
         description: 'Réservation créée',
         variant: 'default',
       });
-      bookingListRef.current?.refresh();
+      stockListRef.current?.refresh();
 
     } catch (error) {
       console.error("Erreur lors de la création de la réservation :", error);
@@ -93,7 +92,7 @@ export default function Page() {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between">
-                  <h2>Réservations</h2>
+                  <h2>ALEDDDDDd</h2>
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button onClick={handleNewReservation}>
@@ -118,11 +117,10 @@ export default function Page() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <BookingsList ref={bookingListRef}/>
+              <StockList ref={stockListRef}/>
             </CardContent>
           </Card>
         </div>
-        <button type="button" onClick={() => router.push('/dashboard/stocks')}>GO</button>
       </SidebarInset>
     </SidebarProvider>
   )

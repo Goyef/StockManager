@@ -53,6 +53,26 @@ const BookingList = forwardRef<BookingListRef>((_, ref) => {
     },
   });
 
+  //
+  const editBookingsMutation = useMutation({
+    mutationFn: async (bookingId: string) => {
+      const response = await fetch(`/api/bookings/${bookingId}`, {
+        method: "PATCH",
+      });
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression de la réservation.");
+      }
+    },
+    onSuccess: () => {
+      // Rafraîchir la liste des réservations après la suppression
+      queryClient.invalidateQueries({ queryKey: ["bookings"] });
+      toast({
+        title: 'Success',
+        description: 'Réservation supprimée',
+        variant: 'default',
+      });
+    },
+  });
   // Expose la méthode `refresh` au composant parent
   useImperativeHandle(ref, () => ({
     refresh: refetch,
@@ -86,7 +106,8 @@ const BookingList = forwardRef<BookingListRef>((_, ref) => {
             <TableCell>{new Date(booking.endDate).toLocaleString()}</TableCell>
             <TableCell>
               <div className="flex gap-3">
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon"   
+                onClick={() => editBookingsMutation.mutate(booking.id)}>
                   <Pencil />
                 </Button>
                 <Button
