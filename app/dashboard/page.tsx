@@ -1,75 +1,78 @@
-"use client"
+"use client";
 
-import { useRef, useState } from "react"
-import BookingsList, { BookingListRef } from "@/components/bookings/bookingsList"
-import { AppSidebar } from "@/components/sidebar/app-sidebar"
+import { useRef, useState } from "react";
+import BookingsList, {
+  BookingListRef,
+} from "@/components/bookings/bookingsList";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-} from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { useAuth } from "@/context/AuthContext"
-import { Plus } from "lucide-react"
-import { BookingForm, BookingFormSchema } from "@/components/bookings/bookingForm"
-import { cn } from "@/lib/utils"
-import { z } from "zod"
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from "next/navigation"
+} from "@/components/ui/sidebar";
+import { useAuth } from "@/context/AuthContext";
+import { Plus } from "lucide-react";
+import {
+  BookingForm,
+  BookingFormSchema,
+} from "@/components/bookings/bookingForm";
+import { cn } from "@/lib/utils";
+import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const router = useRouter()
-  const { user, loading } = useAuth()
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const { toast } = useToast();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const bookingListRef = useRef<BookingListRef>(null);
 
   const handleNewReservation = () => {
-    setIsDialogOpen(true)
-  }
+    setIsDialogOpen(true);
+  };
 
   const handleFormSubmit = async (data: z.infer<typeof BookingFormSchema>) => {
     try {
-      await fetch('/api/bookings', {
-        method: 'POST',
+      await fetch("/api/bookings", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
-  
+
       setIsDialogOpen(false);
       toast({
-        title: 'Success',
-        description: 'Réservation créée',
-        variant: 'default',
+        title: "Success",
+        description: "Réservation créée",
+        variant: "default",
       });
       bookingListRef.current?.refresh();
-
     } catch (error) {
       console.error("Erreur lors de la création de la réservation :", error);
     }
   };
-  
 
-  if (loading) return <p>Chargement...</p>
+  if (loading) return <p>Chargement...</p>;
 
   return (
     <SidebarProvider>
@@ -118,12 +121,20 @@ export default function Page() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <BookingsList ref={bookingListRef}/>
+              <BookingsList ref={bookingListRef} />
             </CardContent>
           </Card>
         </div>
-        <button type="button" onClick={() => router.push('/dashboard/stocks')}>GO</button>
+        <button type="button" onClick={() => router.push("/dashboard/stocks")}>
+          stock
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/commandes")}
+        >
+          Commande
+        </button>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

@@ -36,6 +36,13 @@ import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import StockList, { StockListRef } from "@/components/stocks/stocksList";
+import CommandeList, {
+  CommandeListRef,
+} from "@/components/commandes/commandesList";
+import {
+  CommandeForm,
+  CommandeFormSchema,
+} from "@/components/commandes/commandeForm";
 
 export default function Page() {
   const { user, loading } = useAuth();
@@ -43,15 +50,15 @@ export default function Page() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const stockListRef = useRef<StockListRef>(null);
+  const CommandeListRef = useRef<CommandeListRef>(null);
 
-  const handleNewReservation = () => {
+  const handleNewCommande = () => {
     setIsDialogOpen(true);
   };
 
-  const handleFormSubmit = async (data: z.infer<typeof BookingFormSchema>) => {
+  const handleFormSubmit = async (data: z.infer<typeof CommandeFormSchema>) => {
     try {
-      await fetch("/api/bookings", {
+      await fetch("/api/commandes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +72,7 @@ export default function Page() {
         description: "Réservation créée",
         variant: "default",
       });
-      stockListRef.current?.refresh();
+      CommandeListRef.current?.refresh();
     } catch (error) {
       console.error("Erreur lors de la création de la réservation :", error);
     }
@@ -95,11 +102,11 @@ export default function Page() {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between">
-                  <h2>STOCKS</h2>
+                  <h2>Commandes</h2>
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button onClick={handleNewReservation}>
-                        <Plus /> Ajouter une réservation
+                      <Button onClick={handleNewCommande}>
+                        <Plus /> Ajouter une commande
                       </Button>
                     </DialogTrigger>
                     <DialogContent
@@ -109,10 +116,10 @@ export default function Page() {
                       )}
                     >
                       <DialogHeader>
-                        <DialogTitle>Nouvelle réservation</DialogTitle>
+                        <DialogTitle>Nouvelle commande</DialogTitle>
                       </DialogHeader>
                       <div className="grid py-4 gap-4">
-                        <BookingForm onFormSubmit={handleFormSubmit} />
+                        <CommandeForm onFormSubmit={handleFormSubmit} />
                       </div>
                     </DialogContent>
                   </Dialog>
@@ -120,7 +127,7 @@ export default function Page() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <StockList ref={stockListRef} />
+              <CommandeList ref={CommandeListRef} />
             </CardContent>
           </Card>
         </div>
