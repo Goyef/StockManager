@@ -1,6 +1,6 @@
 import { CreateBooking, GetAllBookings } from "@/services/bookingService";
 import { GetAllStocks } from "@/services/stockService";
-import { GetAllUtilisateurs } from "@/services/utilsateursService";
+import { GetAllUtilisateurs } from "@/services/utilsateurService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {

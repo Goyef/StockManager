@@ -11,31 +11,34 @@ import {
 import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { stocks, utilisateurs } from "@prisma/client";
+import { commandes, stocks, utilisateurs } from "@prisma/client";
 import { SerializedCommandes } from "@/services/commandeService";
 import { comma } from "postcss/lib/list";
+import { SerializedMouvements } from "@/services/mouvementService";
 
-export type CommandeWithRelations = SerializedCommandes & {
-  utilisateurs: utilisateurs;
+export type MouvementWithRelations = SerializedMouvements & {
+  commandes: commandes;
   stocks: stocks;
+  utilisateurs: utilisateurs;
 };
 
-export type CommandeListRef = {
+export type MouvementListRef = {
   refresh: () => void;
 };
 
-const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
+const MouvementList = forwardRef<MouvementListRef>((_, ref) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  // Récupération des stocks
   const {
-    data: commandes,
+    data: mouvements,
     isLoading,
     error,
     refetch,
-  } = useQuery<CommandeWithRelations[], Error>({
-    queryKey: ["commandes"],
-    queryFn: () => fetch("/api/commandes").then((res) => res.json()),
+  } = useQuery<MouvementWithRelations[], Error>({
+    queryKey: ["mouvements"],
+    queryFn: () => fetch("/api/mouvements").then((res) => res.json()),
   });
 
   // test
@@ -57,41 +60,30 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Utilisateur liée</TableHead>
           <TableHead>Statut</TableHead>
           <TableHead>Date de la commande</TableHead>
           <TableHead>Quantité</TableHead>
-          <TableHead>Stock</TableHead>
+          <TableHead>Utilisateur liée</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {commandes &&
-          commandes?.length > 0 &&
-          commandes.map((commande) => (
-            <TableRow key={commande.id_commande}>
-              <TableCell>{commande.utilisateurs.nom}</TableCell>
-              <TableCell
-                className={
-                  String(commande.statut) === "validee"
-                    ? "text-green-500"
-                    : String(commande.statut) === "invalidee"
-                    ? "text-red-500"
-                    : ""
-                }
-              >
-                {commande.statut}
-              </TableCell>
+        {mouvements &&
+          mouvements?.length > 0 &&
+          mouvements.map((mouvement) => (
+            <TableRow key={mouvement.id_mouvement}>
+              <TableCell>{mouvement.stocks.nom}</TableCell>
+              <TableCell>{mouvement.type_mouvement}</TableCell>
               <TableCell>
-                {new Date(commande.date_commande).toLocaleString()}
+                {new Date(mouvement.date_mouvement).toLocaleString()}
               </TableCell>
-              <TableHead>{commande.quantite}</TableHead>
-              <TableCell>{commande.stocks.nom}</TableCell>
+              <TableHead>{mouvement.quantite}</TableHead>
+              <TableCell>{mouvement.utilisateurs.nom}</TableCell>
             </TableRow>
           ))}
-        {(!commandes || commandes?.length === 0) && (
+        {(!mouvements || mouvements?.length === 0) && (
           <TableRow>
             <TableCell>Erreur</TableCell>
-            <TableCell>Absence de commande</TableCell>
+            <TableCell>Absence de mouvements</TableCell>
             <TableCell>0</TableCell>
             <TableCell>N/A</TableCell>
           </TableRow>
@@ -101,6 +93,6 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
   );
 });
 
-CommandeList.displayName = "CommandeList";
+MouvementList.displayName = "MouvementList";
 
-export default CommandeList;
+export default MouvementList;

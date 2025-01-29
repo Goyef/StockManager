@@ -36,58 +36,39 @@ export async function GetAllCommandes(): Promise<SerializedCommandes[]> {
     throw new Error("Failed to fetch commandes");
   }
 }
-
-export async function GetBookingById(id: string): Promise<Booking> {
+export async function GetPendingCommandes(): Promise<SerializedCommandes[]> {
   try {
-    const booking = await prisma.booking.findUnique({
-      where: {
-        id: id,
-      },
+    const commandes = await prisma.commandes.findMany({
       include: {
-        user: true,
-        apartment: true,
+        utilisateurs: true,
+        stocks: true,
+      },
+      where: {
+        statut: "en_attente",
       },
     });
-    if (!booking) {
-      throw new Error(`Booking with ID ${id} not found`);
-    }
-    return booking;
-  } catch (error) {
-    throw new Error("Failed to fetch booking by ID");
-  }
-}
+    const serializedCommandes: SerializedCommandes[] = JSON.parse(
+      JSONbig.stringify(commandes)
+    );
 
-export async function GetBookingsByUser(user: User): Promise<Booking[]> {
-  try {
-    const bookings = await prisma.booking.findMany({
-      where: {
-        id: user?.id,
-      },
-      include: {
-        user: true,
-        apartment: true,
-      },
-    });
-    if (!bookings) {
-      throw new Error(`Bookings for the User ${user} not found`);
-    }
-    return bookings;
+    return serializedCommandes;
   } catch (error) {
-    throw new Error("Failed to fetch bookings by user");
+    console.error(error);
+    throw new Error("Failed to fetch commandes");
   }
 }
 
 export async function CreateCommande(data: {
-  id_utilisateur: number;
-  quantite: number;
-  id_stock: number;
+  id_utilisateur: string;
+  quantite: string;
+  id_stock: string;
 }): Promise<SerializedCommandes> {
   try {
     const commande = await prisma.commandes.create({
       data: {
-        id_utilisateur: data.id_utilisateur,
-        quantit_: data.quantite,
-        id_stock: data.id_stock,
+        id_utilisateur: parseInt(data.id_utilisateur, 10),
+        quantite: parseInt(data.quantite, 10),
+        id_stock: parseInt(data.id_stock, 10),
       },
     });
     const serializedCommande: SerializedCommandes = JSON.parse(
@@ -100,48 +81,29 @@ export async function CreateCommande(data: {
   }
 }
 
-export async function UpdateBooking(data: {
-  id: string;
-  endDate?: Date;
-  startDate?: Date;
-  apartmentId?: string;
-  userId?: string;
-}): Promise<Booking | null> {
+export async function UpdateCommande(data: {
+  id_commande: number;
+  id_utilisateur?: string;
+  statut?: string;
+  date_commande?: Date;
+  id_stock?: string;
+  quantite?: number;
+}): Promise<commandes | null> {
   try {
-    const updatedBooking = await prisma.booking.update({
-      where: { id: data.id },
+    const updatedCommande = await prisma.commandes.update({
+      where: { id_commande: data.id_commande },
       data: {
-        ...(data.startDate && { startDate: new Date(data.startDate) }),
-        ...(data.endDate && { endDate: new Date(data.endDate) }),
-        ...(data.apartmentId && { apartmentId: data.apartmentId }),
-        ...(data.userId && { userId: data.userId }),
+        ...(data.id_utilisateur && { statut: data.id_utilisateur }),
+        ...(data.statut && { statut: data.statut }),
+        ...(data.date_commande && { statut: data.date_commande }),
+        ...(data.id_stock && { id_stock: data.id_stock }),
+        ...(data.quantite && { quantite: data.quantite }),
       },
     });
 
-    return updatedBooking;
+    return updatedCommande;
   } catch (error) {
-    console.error("Error updating booking:", error);
+    console.error("Error updating commande:", error);
     return null;
-  }
-}
-
-export async function DeleteBooking(id: string): Promise<boolean> {
-  try {
-    // Vérifie si la réservation existe
-    const booking = await prisma.booking.findUnique({
-      where: { id },
-    });
-
-    if (!booking) return false;
-
-    // Supprime la réservation
-    await prisma.booking.delete({
-      where: { id },
-    });
-
-    return true;
-  } catch (error) {
-    console.error("Error deleting booking:", error);
-    return false;
   }
 }

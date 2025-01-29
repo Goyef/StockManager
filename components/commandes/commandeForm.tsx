@@ -31,12 +31,12 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { SerializedStocks } from "@/services/stockService";
-import { SerializedUtilisateurs } from "@/services/utilsateursService";
+import { SerializedUtilisateurs } from "@/services/utilsateurService";
 import { Input } from "../ui/input";
 
 // Schéma Zod pour le formulaire Commande
 export const CommandeFormSchema = z.object({
-  utilisateurId: z.string().min(1, {
+  id_utilisateur: z.string().min(1, {
     message: "Veuillez sélectionner un utilisateur.",
   }),
   quantite: z.string().refine(
@@ -48,28 +48,16 @@ export const CommandeFormSchema = z.object({
       message: "Veuillez entrer une quantité positive.",
     }
   ),
-  stockId: z.string({
-    required_error: "Veuillez sélectionner un stock.",
+  id_stock: z.string().min(1, {
+    message: "Veuillez sélectionner un stock.",
   }),
 });
-
-// Types pour les données
-type Utilisateur = {
-  id: bigint;
-  nom: string;
-};
-
-type Stock = {
-  id: bigint;
-  nom: string;
-};
 
 export function CommandeForm({
   onFormSubmit,
 }: {
   onFormSubmit?: (data: z.infer<typeof CommandeFormSchema>) => void;
 }) {
-  // Récupération des appartements via useQuery
   const {
     data: stocks = [],
     isLoading: isLoadingStocks,
@@ -79,7 +67,6 @@ export function CommandeForm({
     queryFn: () => fetch("/api/stocks").then((res) => res.json()),
   });
 
-  // Récupération des utilisateurs via useQuery
   const {
     data: utilisateurs = [],
     isLoading: isLoadingUtilisateurs,
@@ -92,13 +79,14 @@ export function CommandeForm({
   const form = useForm<z.infer<typeof CommandeFormSchema>>({
     resolver: zodResolver(CommandeFormSchema),
     defaultValues: {
-      utilisateurId: "",
+      id_utilisateur: "",
       quantite: "",
-      stockId: "",
+      id_stock: "",
     },
   });
 
   function onSubmit(data: z.infer<typeof CommandeFormSchema>) {
+    console.log("data", data);
     if (onFormSubmit) {
       onFormSubmit(data);
     }
@@ -106,47 +94,47 @@ export function CommandeForm({
 
   return (
     <Form {...form}>
-      <FormField
-        control={form.control}
-        name="utilisateurId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Utilisateur</FormLabel>
-            <FormControl>
-              {isLoadingUtilisateurs ? (
-                <p>Chargement des utilisateurs...</p>
-              ) : errorUtilisateurs ? (
-                <p>Erreur lors du chargement des utilisateurs.</p>
-              ) : (
-                <Select
-                  onValueChange={(value) => field.onChange(value)}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionnez un utilisateur" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {utilisateurs.map((utilisateur) => (
-                      <SelectItem
-                        key={utilisateur.id_utilisateur}
-                        value={utilisateur.id_utilisateur.toString()}
-                      >
-                        {utilisateur.nom}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </FormControl>
-            <FormDescription>
-              Choisissez l'utilisateur pour cette commande.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <FormField
+          control={form.control}
+          name="id_utilisateur"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Utilisateur</FormLabel>
+              <FormControl>
+                {isLoadingUtilisateurs ? (
+                  <p>Chargement des utilisateurs...</p>
+                ) : errorUtilisateurs ? (
+                  <p>Erreur lors du chargement des utilisateurs.</p>
+                ) : (
+                  <Select
+                    onValueChange={(value) => field.onChange(value)}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionnez un utilisateur" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {utilisateurs.map((utilisateur) => (
+                        <SelectItem
+                          key={utilisateur.id_utilisateur}
+                          value={utilisateur.id_utilisateur.toString()}
+                        >
+                          {utilisateur.nom}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </FormControl>
+              <FormDescription>
+                Choisissez l'utilisateur pour cette commande.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="quantite"
@@ -177,7 +165,7 @@ export function CommandeForm({
 
         <FormField
           control={form.control}
-          name="stockId"
+          name="id_stock"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Stock concerné</FormLabel>

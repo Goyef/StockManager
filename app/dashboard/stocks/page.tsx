@@ -51,7 +51,7 @@ export default function Page() {
 
   const handleFormSubmit = async (data: z.infer<typeof BookingFormSchema>) => {
     try {
-      await fetch("/api/bookings", {
+      await fetch("/api/stocks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,12 +62,12 @@ export default function Page() {
       setIsDialogOpen(false);
       toast({
         title: "Success",
-        description: "Réservation créée",
+        description: "Nouveau stocks créée",
         variant: "default",
       });
       stockListRef.current?.refresh();
     } catch (error) {
-      console.error("Erreur lors de la création de la réservation :", error);
+      console.error("Erreur lors de la création du stock :", error);
     }
   };
 
@@ -99,7 +99,7 @@ export default function Page() {
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button onClick={handleNewReservation}>
-                        <Plus /> Ajouter une réservation
+                        <Plus /> Ajouter un nouveau stock
                       </Button>
                     </DialogTrigger>
                     <DialogContent
@@ -109,7 +109,7 @@ export default function Page() {
                       )}
                     >
                       <DialogHeader>
-                        <DialogTitle>Nouvelle réservation</DialogTitle>
+                        <DialogTitle>Nouvelle stock</DialogTitle>
                       </DialogHeader>
                       <div className="grid py-4 gap-4">
                         <BookingForm onFormSubmit={handleFormSubmit} />

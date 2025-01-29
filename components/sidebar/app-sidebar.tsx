@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   BookOpen,
   Bot,
@@ -16,12 +16,12 @@ import {
   Send,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavProjects } from "@/components/sidebar/nav-projects"
-import { NavSecondary } from "@/components/sidebar/nav-secondary"
-import { NavUser } from "@/components/sidebar/nav-user"
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavProjects } from "@/components/sidebar/nav-projects";
+import { NavSecondary } from "@/components/sidebar/nav-secondary";
+import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -30,8 +30,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { useAuth } from "@/context/AuthContext"
+} from "@/components/ui/sidebar";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const data = {
   user: {
@@ -44,14 +45,14 @@ const data = {
       title: "Appartements",
       url: "#",
       icon: Building2,
-      isActive: true
+      isActive: true,
     },
     {
       title: "Réservations",
       url: "#",
       icon: NotebookPen,
-      isActive: true
-    }
+      isActive: true,
+    },
   ],
   navSecondary: [
     {
@@ -65,23 +66,25 @@ const data = {
       icon: CircleHelp,
     },
   ],
-  projects: [
-    
-  ],
-}
+  projects: [],
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
+  const router = useRouter();
   const { user, loading } = useAuth();
 
   if (loading) return <p>Chargement...</p>;
-  
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton
+              size="lg"
+              asChild
+              onClick={() => router.push("/dashboard")}
+            >
               <a href="#">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-sidebar-primary-foreground">
                   <GraduationCap className="size-4" />
@@ -98,10 +101,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/commandes")}
+        >
+          Commandes
+        </button>
+        <button type="button" onClick={() => router.push("/dashboard/stocks")}>
+          Stocks
+        </button>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

@@ -43,18 +43,15 @@ import {
   CommandeForm,
   CommandeFormSchema,
 } from "@/components/commandes/commandeForm";
+import MouvementList, {
+  MouvementListRef,
+} from "@/components/mouvements/mouvementList";
 
 export default function Page() {
   const { user, loading } = useAuth();
   const { toast } = useToast();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const CommandeListRef = useRef<CommandeListRef>(null);
-
-  const handleNewCommande = () => {
-    setIsDialogOpen(true);
-  };
+  const MouvementListRef = useRef<MouvementListRef>(null);
 
   const handleFormSubmit = async (data: z.infer<typeof CommandeFormSchema>) => {
     try {
@@ -66,15 +63,9 @@ export default function Page() {
         body: JSON.stringify(data),
       });
 
-      setIsDialogOpen(false);
-      toast({
-        title: "Success",
-        description: "Commande créée",
-        variant: "default",
-      });
-      CommandeListRef.current?.refresh();
+      MouvementListRef.current?.refresh();
     } catch (error) {
-      console.error("Erreur lors de la création de la commande :", error);
+      console.error("Erreur lors de la création de la réservation :", error);
     }
   };
 
@@ -102,32 +93,12 @@ export default function Page() {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between">
-                  <h2>Commandes</h2>
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button onClick={handleNewCommande}>
-                        <Plus /> Ajouter une commande
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent
-                      className={cn(
-                        "sm:max-w-[600px] w-full max-h-[90vh]",
-                        "overflow-y-auto"
-                      )}
-                    >
-                      <DialogHeader>
-                        <DialogTitle>Nouvelle commande</DialogTitle>
-                      </DialogHeader>
-                      <div className="grid py-4 gap-4">
-                        <CommandeForm onFormSubmit={handleFormSubmit} />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
+                  <h2>Mouvements</h2>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <CommandeList ref={CommandeListRef} />
+              <MouvementList ref={MouvementListRef} />
             </CardContent>
           </Card>
         </div>

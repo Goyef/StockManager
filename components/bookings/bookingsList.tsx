@@ -27,7 +27,12 @@ const BookingList = forwardRef<BookingListRef>((_, ref) => {
   const { toast } = useToast();
 
   // Récupération des réservations
-  const { data: bookings, isLoading, error, refetch } = useQuery<BookingWithRelations[], Error>({
+  const {
+    data: bookings,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery<BookingWithRelations[], Error>({
     queryKey: ["bookings"],
     queryFn: () => fetch("/api/bookings").then((res) => res.json()),
   });
@@ -46,9 +51,9 @@ const BookingList = forwardRef<BookingListRef>((_, ref) => {
       // Rafraîchir la liste des réservations après la suppression
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast({
-        title: 'Success',
-        description: 'Réservation supprimée',
-        variant: 'default',
+        title: "Success",
+        description: "Réservation supprimée",
+        variant: "default",
       });
     },
   });
@@ -67,9 +72,9 @@ const BookingList = forwardRef<BookingListRef>((_, ref) => {
       // Rafraîchir la liste des réservations après la suppression
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       toast({
-        title: 'Success',
-        description: 'Réservation supprimée',
-        variant: 'default',
+        title: "Success",
+        description: "Réservation supprimée",
+        variant: "default",
       });
     },
   });
@@ -102,12 +107,17 @@ const BookingList = forwardRef<BookingListRef>((_, ref) => {
           <TableRow key={booking.id}>
             <TableCell>{booking.user.name}</TableCell>
             <TableCell>{booking.apartment.name}</TableCell>
-            <TableCell>{new Date(booking.startDate).toLocaleString()}</TableCell>
+            <TableCell>
+              {new Date(booking.startDate).toLocaleString()}
+            </TableCell>
             <TableCell>{new Date(booking.endDate).toLocaleString()}</TableCell>
             <TableCell>
               <div className="flex gap-3">
-                <Button variant="outline" size="icon"   
-                onClick={() => editBookingsMutation.mutate(booking.id)}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => editBookingsMutation.mutate(booking.id)}
+                >
                   <Pencil />
                 </Button>
                 <Button
