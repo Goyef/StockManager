@@ -4,20 +4,20 @@ const prisma = new PrismaClient();
 
 export async function GetAllBookings(): Promise<Booking[]> {
   try {
-      const bookings = await prisma.booking.findMany({
-          include: {
-              user: true,
-              apartment: true,
-          },
-      });
-      return bookings;
+    const bookings = await prisma.booking.findMany({
+      include: {
+        user: true,
+        apartment: true,
+      },
+    });
+    return bookings;
   } catch (error) {
-      console.error(error);
-      throw new Error("Failed to fetch bookings");
+    console.error(error);
+    throw new Error("Failed to fetch bookings");
   }
 }
 
-export async function GetBookingById(id: string) : Promise<Booking> {
+export async function GetBookingById(id: string): Promise<Booking> {
   try {
     const booking = await prisma.booking.findUnique({
       where: {
@@ -57,34 +57,38 @@ export async function GetBookingsByUser(user: User): Promise<Booking[]> {
   }
 }
 
-export async function CreateBooking(data: { endDate: Date; startDate: Date; apartmentId: string, userId: string }): Promise<Booking> {
-    try {
-      const booking = await prisma.booking.create({
-        data: {
-          endDate: data.endDate,
-          startDate: data.startDate,
-          apartmentId: data.apartmentId,
-          userId: data.userId,
-        },
-      });
-      return booking;
-    } catch (error) {
-      console.error("Error creating booking:", error);
-      throw new Error("Failed to create booking");
-    }
+export async function CreateBooking(data: {
+  endDate: Date;
+  startDate: Date;
+  apartmentId: string;
+  userId: string;
+}): Promise<Booking> {
+  try {
+    const booking = await prisma.booking.create({
+      data: {
+        endDate: data.endDate,
+        startDate: data.startDate,
+        apartmentId: data.apartmentId,
+        userId: data.userId,
+      },
+    });
+    return booking;
+  } catch (error) {
+    console.error("Error creating booking:", error);
+    throw new Error("Failed to create booking");
+  }
 }
 
-export async function UpdateBooking(data: { 
-  id: string; 
-  endDate?: Date; 
-  startDate?: Date; 
-  apartmentId?: string; 
-  userId?: string; 
+export async function UpdateBooking(data: {
+  id: string;
+  endDate?: Date;
+  startDate?: Date;
+  apartmentId?: string;
+  userId?: string;
 }): Promise<Booking | null> {
   try {
-
     const updatedBooking = await prisma.booking.update({
-      where: { id: data.id }, 
+      where: { id: data.id },
       data: {
         ...(data.startDate && { startDate: new Date(data.startDate) }),
         ...(data.endDate && { endDate: new Date(data.endDate) }),
@@ -93,7 +97,7 @@ export async function UpdateBooking(data: {
       },
     });
 
-    return updatedBooking; 
+    return updatedBooking;
   } catch (error) {
     console.error("Error updating booking:", error);
     return null;
@@ -102,7 +106,6 @@ export async function UpdateBooking(data: {
 
 export async function DeleteBooking(id: string): Promise<boolean> {
   try {
-
     // Vérifie si la réservation existe
     const booking = await prisma.booking.findUnique({
       where: { id },

@@ -39,8 +39,8 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
   });
 
   const validateCommandeMutation = useMutation({
-    mutationFn: async (commandeId: number) => {
-      const response = await fetch(`/api/commandes/${commandeId}`, {
+    mutationFn: async (id_commande: number) => {
+      const response = await fetch(`/api/pendingCommandes/${id_commande}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
           "Erreur lors de la mise à jour du statut de la commande."
         );
       }
-      return { commandeId: commandeId, statut: "validee" };
+      return { commandeId: id_commande, statut: "validee" };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["commandes"] });
@@ -65,8 +65,8 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
   });
 
   const invalidateCommandeMutation = useMutation({
-    mutationFn: async (commandeId: number) => {
-      const response = await fetch(`/api/commandes/${commandeId}`, {
+    mutationFn: async (id_commande: number) => {
+      const response = await fetch(`/api/pendingCommandes/${id_commande}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
           "Erreur lors de la mise à jour du statut de la commande."
         );
       }
-      return { commandeId: commandeId, statut: "invalidee" };
+      return { commandeId: id_commande, statut: "invalidee" };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["commandes"] });

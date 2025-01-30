@@ -62,6 +62,7 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
           <TableHead>Date de la commande</TableHead>
           <TableHead>Quantité</TableHead>
           <TableHead>Stock</TableHead>
+          <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

@@ -1,4 +1,4 @@
-import { Booking, commandes, PrismaClient, User } from "@prisma/client";
+import { $Enums, Booking, commandes, PrismaClient, User } from "@prisma/client";
 import JSONbig from "json-bigint";
 
 const prisma = new PrismaClient();
@@ -57,12 +57,29 @@ export async function GetPendingCommandes(): Promise<SerializedCommandes[]> {
     throw new Error("Failed to fetch commandes");
   }
 }
+export async function GetCommandegById(
+  id_commande: number
+): Promise<commandes> {
+  try {
+    const commande = await prisma.commandes.findUnique({
+      where: {
+        id_commande: id_commande,
+      },
+    });
+    if (!commande) {
+      throw new Error(`Commande with ID ${id_commande} not found`);
+    }
+    return commande;
+  } catch (error) {
+    throw new Error("Failed to fetch commande by ID");
+  }
+}
 
 export async function CreateCommande(data: {
   id_utilisateur: string;
   quantite: string;
   id_stock: string;
-}): Promise<SerializedCommandes> {
+}): Promise<commandes> {
   try {
     const commande = await prisma.commandes.create({
       data: {
@@ -71,34 +88,42 @@ export async function CreateCommande(data: {
         id_stock: parseInt(data.id_stock, 10),
       },
     });
-    const serializedCommande: SerializedCommandes = JSON.parse(
-      JSONbig.stringify(commande)
-    );
-    return serializedCommande;
+    return commande;
   } catch (error) {
     console.error("Error creating commande:", error);
     throw new Error("Failed to create commande");
   }
 }
-
-export async function UpdateCommande(data: {
+export async function UpdateStatutCommande(data: {
   id_commande: number;
   id_utilisateur?: string;
-  statut?: string;
+  statut?: $Enums.statut;
   date_commande?: Date;
   id_stock?: string;
-  quantite?: number;
+  quantite?: string;
 }): Promise<commandes | null> {
   try {
+    const updateData: Partial<commandes> = {};
+
+    if (data.id_utilisateur !== undefined) {
+      updateData.id_utilisateur = BigInt(data.id_utilisateur);
+    }
+    if (data.statut !== undefined) {
+      updateData.statut = data.statut;
+    }
+    if (data.date_commande !== undefined) {
+      updateData.date_commande = new Date(data.date_commande);
+    }
+    if (data.id_stock !== undefined) {
+      updateData.id_stock = BigInt(data.id_stock);
+    }
+    if (data.quantite !== undefined) {
+      updateData.quantite = BigInt(data.quantite);
+    }
+
     const updatedCommande = await prisma.commandes.update({
-      where: { id_commande: data.id_commande },
-      data: {
-        ...(data.id_utilisateur && { statut: data.id_utilisateur }),
-        ...(data.statut && { statut: data.statut }),
-        ...(data.date_commande && { statut: data.date_commande }),
-        ...(data.id_stock && { id_stock: data.id_stock }),
-        ...(data.quantite && { quantite: data.quantite }),
-      },
+      where: { id_commande: BigInt(data.id_commande) },
+      data: updateData,
     });
 
     return updatedCommande;
