@@ -1,9 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import BookingsList, {
-  BookingListRef,
-} from "@/components/bookings/bookingsList";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
@@ -14,31 +11,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
-import { Plus } from "lucide-react";
-import {
-  BookingForm,
-  BookingFormSchema,
-} from "@/components/bookings/bookingForm";
-import { cn } from "@/lib/utils";
+
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import StockList, { StockListRef } from "@/components/stocks/stocksList";
-import CommandeList, {
-  CommandeListRef,
-} from "@/components/commandes/commandesList";
+
 import {
   CommandeForm,
   CommandeFormSchema,
@@ -52,22 +35,6 @@ export default function Page() {
   const { toast } = useToast();
 
   const MouvementListRef = useRef<MouvementListRef>(null);
-
-  const handleFormSubmit = async (data: z.infer<typeof CommandeFormSchema>) => {
-    try {
-      await fetch("/api/commandes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      MouvementListRef.current?.refresh();
-    } catch (error) {
-      console.error("Erreur lors de la création de la réservation :", error);
-    }
-  };
 
   if (loading) return <p>Chargement...</p>;
 

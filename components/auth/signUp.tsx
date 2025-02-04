@@ -28,12 +28,16 @@ export default function SignUp() {
 
   const email = watch("email");
   const password = watch("password");
+  const nom = watch("nom");
+  const prenom = watch("prenom");
 
   const onSubmit = async (data: any) => {
     setLoading(true);
     const result = await signupUserByEmailAndPassword(
       data.email,
-      data.password
+      data.password,
+      data.nom,
+      data.prenom
     );
 
     setLoading(false);

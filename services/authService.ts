@@ -7,7 +7,6 @@ export const authUserByEmailAndPassword = async (
   email: string,
   password: string
 ): Promise<boolean> => {
-
   if (!email || !password) return false;
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -16,13 +15,15 @@ export const authUserByEmailAndPassword = async (
   });
 
   if (error) return false;
-  
+
   return true;
 };
 
 export const signupUserByEmailAndPassword = async (
   email: string,
-  password: string
+  password: string,
+  nom: string,
+  prenom: string
 ): Promise<boolean> => {
   if (!email || !password) return false;
 
@@ -36,13 +37,11 @@ export const signupUserByEmailAndPassword = async (
 };
 
 export const getUser = async (): Promise<User | null> => {
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) return null;
 
   return user;
 };
-
-
-

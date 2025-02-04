@@ -38,26 +38,45 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
     queryFn: () => fetch("/api/pendingCommandes").then((res) => res.json()),
   });
 
+  type ValidateCommandeArgs = {
+    id_commande: number;
+    id_stock: number;
+    quantite: number;
+  };
+
   const validateCommandeMutation = useMutation({
-    mutationFn: async (id_commande: number) => {
+    mutationFn: async ({
+      id_commande,
+      id_stock,
+      quantite,
+    }: ValidateCommandeArgs) => {
       const response = await fetch(`/api/pendingCommandes/${id_commande}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ statut: "validee" }),
+        body: JSON.stringify({ statut: "validee", id_stock, quantite }),
       });
       if (!response.ok) {
+        const errorData = await response.json();
         throw new Error(
-          "Erreur lors de la mise à jour du statut de la commande."
+          errorData.error ||
+            "Erreur lors de la mise à jour du statut de la commande."
         );
       }
       return { commandeId: id_commande, statut: "validee" };
     },
+    onError: (error) => {
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["commandes"] });
       toast({
-        title: "Success",
+        title: "Succès",
         description: `Statut de la commande ${data.commandeId} mis à jour en ${data.statut}`,
         variant: "default",
       });
@@ -141,22 +160,26 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
               <TableCell>
                 <div className="flex gap-3">
                   <Button
-                    variant="outline"
-                    size="icon"
+                    variant="default"
+                    size="lg"
                     onClick={() =>
-                      validateCommandeMutation.mutate(commande.id_commande)
+                      validateCommandeMutation.mutate({
+                        id_commande: commande.id_commande,
+                        id_stock: commande.id_stock,
+                        quantite: commande.quantite,
+                      })
                     }
                   >
                     Valider
                   </Button>
                   <Button
-                    variant="outline"
-                    size="icon"
+                    variant="destructive"
+                    size="lg"
                     onClick={() =>
                       invalidateCommandeMutation.mutate(commande.id_commande)
                     }
                   >
-                    Invalider
+                    Refuser
                   </Button>
                 </div>
               </TableCell>
@@ -165,7 +188,7 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
         {(!commandes || commandes.length === 0) && (
           <TableRow>
             <TableCell>Erreur</TableCell>
-            <TableCell>Absence de commande</TableCell>
+            <TableCell>Absence de commande en attente</TableCell>
             <TableCell>0</TableCell>
             <TableCell>N/A</TableCell>
           </TableRow>

@@ -98,7 +98,7 @@ export function StockForm({
           name="nom"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Quantité</FormLabel>
+              <FormLabel>Nom</FormLabel>
               <Input type="text" {...field} />
               <FormDescription>
                 Indiquez le nom du nouveau stock.

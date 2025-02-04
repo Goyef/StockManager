@@ -43,6 +43,7 @@ import {
   CommandeForm,
   CommandeFormSchema,
 } from "@/components/commandes/commandeForm";
+import { CommandeFormAdmin } from "@/components/commandes/commandeFormAdmin";
 
 export default function Page() {
   const { user, loading } = useAuth();
@@ -58,7 +59,7 @@ export default function Page() {
 
   const handleFormSubmit = async (data: z.infer<typeof CommandeFormSchema>) => {
     try {
-      await fetch("/api/commandes", {
+      await fetch("/api/commandesAdmin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,11 +103,11 @@ export default function Page() {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between">
-                  <h2>Commandes sortie</h2>
+                  <h2>Commandes entrée</h2>
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button onClick={handleNewCommande}>
-                        <Plus /> Ajouter une commande
+                        <Plus /> Ajouter une commande administrateur
                       </Button>
                     </DialogTrigger>
                     <DialogContent
@@ -119,7 +120,7 @@ export default function Page() {
                         <DialogTitle>Nouvelle commande</DialogTitle>
                       </DialogHeader>
                       <div className="grid py-4 gap-4">
-                        <CommandeForm onFormSubmit={handleFormSubmit} />
+                        <CommandeFormAdmin onFormSubmit={handleFormSubmit} />
                       </div>
                     </DialogContent>
                   </Dialog>

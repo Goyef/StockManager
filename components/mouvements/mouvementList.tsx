@@ -27,9 +27,6 @@ export type MouvementListRef = {
 };
 
 const MouvementList = forwardRef<MouvementListRef>((_, ref) => {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-
   // Récupération des stocks
   const {
     data: mouvements,
@@ -60,10 +57,10 @@ const MouvementList = forwardRef<MouvementListRef>((_, ref) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Statut</TableHead>
-          <TableHead>Date de la commande</TableHead>
+          <TableHead>Stock</TableHead>
+          <TableHead>Type de mouvement</TableHead>
           <TableHead>Quantité</TableHead>
-          <TableHead>Utilisateur liée</TableHead>
+          <TableHead>Date mouvement</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -73,11 +70,10 @@ const MouvementList = forwardRef<MouvementListRef>((_, ref) => {
             <TableRow key={mouvement.id_mouvement}>
               <TableCell>{mouvement.stocks.nom}</TableCell>
               <TableCell>{mouvement.type_mouvement}</TableCell>
+              <TableHead>{mouvement.quantite}</TableHead>
               <TableCell>
                 {new Date(mouvement.date_mouvement).toLocaleString()}
               </TableCell>
-              <TableHead>{mouvement.quantite}</TableHead>
-              <TableCell>{mouvement.utilisateurs.nom}</TableCell>
             </TableRow>
           ))}
         {(!mouvements || mouvements?.length === 0) && (

@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UpdateStatutCommande } from "@/services/commandeService"; // Assurez-vous d'importer la fonction
+import { UpdateStatutCommande } from "@/services/commandeService";
 import { $Enums } from "@prisma/client";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id_commande: number } }
+  { params }: { params: { id: number } }
 ) {
   try {
-    const { id_commande } = params;
+    const { id } = params;
+    console.log("params", { id });
 
-    if (!id_commande) {
+    if (!id) {
       return NextResponse.json(
         { error: "Commande ID is required." },
         { status: 400 }
@@ -17,7 +18,7 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { statut } = body;
+    const { statut, id_stock, quantite } = body;
 
     if (!statut) {
       return NextResponse.json(
@@ -25,10 +26,11 @@ export async function PATCH(
         { status: 400 }
       );
     }
-
     const updatedCommande = await UpdateStatutCommande({
-      id_commande: id_commande,
+      id_commande: id,
       statut: statut as $Enums.statut,
+      id_stock: id_stock,
+      quantite: quantite,
     });
 
     if (!updatedCommande) {
@@ -42,7 +44,7 @@ export async function PATCH(
   } catch (error) {
     console.error("Error updating commande:", error);
     return NextResponse.json(
-      { error: "Failed to update commande." },
+      { error: ` ${(error as Error).message}` },
       { status: 500 }
     );
   }

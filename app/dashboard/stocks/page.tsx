@@ -36,6 +36,7 @@ import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import StockList, { StockListRef } from "@/components/stocks/stocksList";
+import { StockForm, StockFormSchema } from "@/components/stocks/stockForm";
 
 export default function Page() {
   const { user, loading } = useAuth();
@@ -49,7 +50,7 @@ export default function Page() {
     setIsDialogOpen(true);
   };
 
-  const handleFormSubmit = async (data: z.infer<typeof BookingFormSchema>) => {
+  const handleFormSubmit = async (data: z.infer<typeof StockFormSchema>) => {
     try {
       await fetch("/api/stocks", {
         method: "POST",
@@ -95,7 +96,7 @@ export default function Page() {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between">
-                  <h2>STOCKS</h2>
+                  <h2>Stocks</h2>
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button onClick={handleNewReservation}>
@@ -112,7 +113,7 @@ export default function Page() {
                         <DialogTitle>Nouvelle stock</DialogTitle>
                       </DialogHeader>
                       <div className="grid py-4 gap-4">
-                        <BookingForm onFormSubmit={handleFormSubmit} />
+                        <StockForm onFormSubmit={handleFormSubmit} />
                       </div>
                     </DialogContent>
                   </Dialog>

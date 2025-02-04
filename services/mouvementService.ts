@@ -22,11 +22,6 @@ export async function GetAllMouvements(): Promise<SerializedMouvements[]> {
     const mouvements = await prisma.mouvements.findMany({
       include: {
         stocks: true,
-        commandes: {
-          include: {
-            utilisateurs: true,
-          },
-        },
       },
     });
     const serializedMouvements: SerializedMouvements[] = JSON.parse(

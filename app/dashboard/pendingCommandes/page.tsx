@@ -56,32 +56,6 @@ export default function Page() {
 
   const PendingCommandeListRef = useRef<PendingCommandeListRef>(null);
 
-  const handleNewCommande = () => {
-    setIsDialogOpen(true);
-  };
-
-  const handleFormSubmit = async (data: z.infer<typeof CommandeFormSchema>) => {
-    try {
-      await fetch("/api/commandes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      setIsDialogOpen(false);
-      toast({
-        title: "Success",
-        description: "Commande créée",
-        variant: "default",
-      });
-      PendingCommandeListRef.current?.refresh();
-    } catch (error) {
-      console.error("Erreur lors de la création de la commande :", error);
-    }
-  };
-
   if (loading) return <p>Chargement...</p>;
 
   return (
@@ -106,7 +80,7 @@ export default function Page() {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between">
-                  <h2>Commandes</h2>
+                  <h2>Commandes en attente</h2>
                 </div>
               </CardTitle>
             </CardHeader>

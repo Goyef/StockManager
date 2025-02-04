@@ -107,8 +107,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         >
           Commandes
         </button>
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/pendingCommandes")}
+        >
+          Commandes en attente
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/commandesAdmin")}
+        >
+          Commandes admin
+        </button>
         <button type="button" onClick={() => router.push("/dashboard/stocks")}>
           Stocks
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/mouvements")}
+        >
+          Mouvements
         </button>
       </SidebarContent>
       <SidebarFooter>

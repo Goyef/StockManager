@@ -10,7 +10,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Pill, Stethoscope, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { SerializedStocks } from "@/services/stockService";
 
@@ -68,7 +68,14 @@ const StockList = forwardRef<StockListRef>((_, ref) => {
               <TableCell>{stock.nom}</TableCell>
               <TableCell>{stock.description}</TableCell>
               <TableCell>{stock.quantite_disponible}</TableCell>
-              <TableCell>{stock.type}</TableCell>
+              <TableCell>
+                {stock.type}
+                {String(stock.type) === "medicament" ? (
+                  <Pill />
+                ) : (
+                  <Stethoscope />
+                )}
+              </TableCell>
             </TableRow>
           ))}
         {(!stocks || stocks?.length === 0) && (

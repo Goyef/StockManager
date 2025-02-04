@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Table,
@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { stocks, utilisateurs } from "@prisma/client";
 import { SerializedCommandes } from "@/services/commandeService";
 import { comma } from "postcss/lib/list";
+import { useAuth } from "@/context/AuthContext";
 
 export type CommandeWithRelations = SerializedCommandes & {
   utilisateurs: utilisateurs;
@@ -27,6 +28,14 @@ export type CommandeListRef = {
 const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [editingCommande, setEditingCommande] =
+    useState<CommandeWithRelations | null>(null);
+  const [editData, setEditData] = useState({
+    quantite: 0,
+    date_commande: "",
+    id_stock: 0,
+  });
 
   const {
     data: commandes,
@@ -62,7 +71,6 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
           <TableHead>Date de la commande</TableHead>
           <TableHead>Quantité</TableHead>
           <TableHead>Stock</TableHead>
-          <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

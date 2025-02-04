@@ -53,7 +53,7 @@ export const CommandeFormSchema = z.object({
   }),
 });
 
-export function CommandeForm({
+export function CommandeFormAdmin({
   onFormSubmit,
 }: {
   onFormSubmit?: (data: z.infer<typeof CommandeFormSchema>) => void;
