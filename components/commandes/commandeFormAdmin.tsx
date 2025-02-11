@@ -86,7 +86,6 @@ export function CommandeFormAdmin({
   });
 
   function onSubmit(data: z.infer<typeof CommandeFormSchema>) {
-    console.log("data", data);
     if (onFormSubmit) {
       onFormSubmit(data);
     }

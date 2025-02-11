@@ -7,8 +7,7 @@ export async function PATCH(
   { params }: { params: { id: number } }
 ) {
   try {
-    const { id } = params;
-    console.log("params", { id });
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(

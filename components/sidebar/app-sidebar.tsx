@@ -128,6 +128,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         >
           Mouvements
         </button>
+        <button
+          type="button"
+          onClick={() => router.push("/dashboard/utilisateurs")}
+        >
+          Promotion de rôles utilisateur
+        </button>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

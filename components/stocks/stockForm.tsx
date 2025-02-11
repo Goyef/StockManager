@@ -52,7 +52,6 @@ export function StockForm({
   });
 
   function onSubmit(data: z.infer<typeof StockFormSchema>) {
-    console.log("data", data);
     if (onFormSubmit) {
       onFormSubmit(data);
     }

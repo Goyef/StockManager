@@ -1,9 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import BookingsList, {
-  BookingListRef,
-} from "@/components/bookings/bookingsList";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
@@ -14,40 +11,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
-import { Plus } from "lucide-react";
-import {
-  BookingForm,
-  BookingFormSchema,
-} from "@/components/bookings/bookingForm";
-import { cn } from "@/lib/utils";
-import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
 
-import PendingMouvementList, {
-  PendingCommandeListRef,
-} from "@/components/commandes/pendingCommandeList";
-import PendingCommandeList from "@/components/commandes/pendingCommandeList";
+import UtilisateursList, {
+  UtilisateurListRef,
+} from "@/components/utilisateurs/utilisateursList";
 
 export default function Page() {
   const { user, loading } = useAuth();
-  const { toast } = useToast();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const PendingCommandeListRef = useRef<PendingCommandeListRef>(null);
+  const UtilisateursListRef = useRef<UtilisateurListRef>(null);
 
   if (loading) return <p>Chargement...</p>;
 
@@ -73,12 +52,12 @@ export default function Page() {
             <CardHeader>
               <CardTitle>
                 <div className="flex justify-between">
-                  <h2>Commandes en attente</h2>
+                  <h2>Utilisateurs</h2>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <PendingCommandeList ref={PendingCommandeListRef} />
+              <UtilisateursList ref={UtilisateursListRef} />
             </CardContent>
           </Card>
         </div>

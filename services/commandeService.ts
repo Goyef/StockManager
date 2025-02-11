@@ -214,3 +214,21 @@ export async function UpdateStatutCommande(data: {
     throw error;
   }
 }
+
+export async function DeleteCommande(id: number): Promise<boolean> {
+  try {
+    const commande = await prisma.commandes.findUnique({
+      where: { id_commande: BigInt(id) },
+    });
+
+    if (!commande) return false;
+
+    await prisma.commandes.delete({
+      where: { id_commande: BigInt(id) },
+    });
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

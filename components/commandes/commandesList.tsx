@@ -47,6 +47,23 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
     queryFn: () => fetch("/api/commandes").then((res) => res.json()),
   });
 
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/commandes/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Succès",
+          description: "Commande supprimée avec succès",
+        });
+        refetch();
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+    }
+  };
   // test
 
   // Expose la méthode `refresh` au composant parent
@@ -95,6 +112,26 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
               </TableCell>
               <TableHead>{commande.quantite}</TableHead>
               <TableCell>{commande.stocks.nom}</TableCell>
+              <TableCell>
+                {String(commande.statut) === "en_attente" && (
+                  <div className="flex space-x-2">
+                    {/* <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(commande)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button> */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(commande.id_commande)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </TableCell>
             </TableRow>
           ))}
         {(!commandes || commandes?.length === 0) && (

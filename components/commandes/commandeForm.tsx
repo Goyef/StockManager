@@ -14,14 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -86,7 +78,6 @@ export function CommandeForm({
   });
 
   function onSubmit(data: z.infer<typeof CommandeFormSchema>) {
-    console.log("data", data);
     if (onFormSubmit) {
       onFormSubmit(data);
     }

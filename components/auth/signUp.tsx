@@ -109,20 +109,12 @@ export default function SignUp() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="password">Mot de passe</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  {...register("password", { required: true })}
-                />
-              </div>
-              <div className="grid gap-2">
                 <Label htmlFor="nom">Nom</Label>
                 <Input
                   id="nom"
                   type="text"
                   placeholder=""
-                  {...register("name", { required: true })}
+                  {...register("nom", { required: true })}
                 />
               </div>
               <div className="grid gap-2">
@@ -134,7 +126,14 @@ export default function SignUp() {
                   {...register("prenom", { required: true })}
                 />
               </div>
-
+              <div className="grid gap-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  {...register("password", { required: true })}
+                />
+              </div>
               {loading ? (
                 <Button className="w-full" disabled>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -144,7 +143,7 @@ export default function SignUp() {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={!email || !password}
+                  disabled={!email || !prenom || !nom || !password}
                 >
                   Créer votre compte
                 </Button>

@@ -169,6 +169,7 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
                         quantite: commande.quantite,
                       })
                     }
+                    disabled={String(commande.statut) !== "en_attente"}
                   >
                     Valider
                   </Button>
@@ -178,6 +179,7 @@ const PendingCommandeList = forwardRef<PendingCommandeListRef>((_, ref) => {
                     onClick={() =>
                       invalidateCommandeMutation.mutate(commande.id_commande)
                     }
+                    disabled={String(commande.statut) !== "en_attente"}
                   >
                     Refuser
                   </Button>

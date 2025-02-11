@@ -27,6 +27,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.3",
     "@tanstack/react-query": "^5.62.7",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
@@ -43,6 +44,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/bcrypt": "^5.0.2",
     "@types/json-bigint": "^1.0.4",
     "@types/node": "^20",
     "@types/react": "^19",
