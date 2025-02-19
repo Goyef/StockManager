@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Table,
   TableBody,
@@ -8,12 +8,8 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { Button } from "../ui/button";
-import { Pencil, Trash2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+
 import { commandes, stocks, utilisateurs } from "@prisma/client";
-import { SerializedCommandes } from "@/services/commandeService";
-import { comma } from "postcss/lib/list";
 import { SerializedMouvements } from "@/services/mouvementService";
 
 export type MouvementWithRelations = SerializedMouvements & {
@@ -27,7 +23,6 @@ export type MouvementListRef = {
 };
 
 const MouvementList = forwardRef<MouvementListRef>((_, ref) => {
-  // Récupération des stocks
   const {
     data: mouvements,
     isLoading,
@@ -38,7 +33,6 @@ const MouvementList = forwardRef<MouvementListRef>((_, ref) => {
     queryFn: () => fetch("/api/mouvements").then((res) => res.json()),
   });
 
-  // test
 
   // Expose la méthode `refresh` au composant parent
   useImperativeHandle(ref, () => ({

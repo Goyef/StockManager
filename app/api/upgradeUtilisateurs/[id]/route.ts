@@ -1,5 +1,4 @@
 import { UpdateRoleUtilisateur } from "@/services/utilisateurService";
-import { $Enums } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(

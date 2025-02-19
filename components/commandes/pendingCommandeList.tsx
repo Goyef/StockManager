@@ -9,11 +9,9 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
-import { Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { stocks, utilisateurs } from "@prisma/client";
 import { SerializedCommandes } from "@/services/commandeService";
-import { comma } from "postcss/lib/list";
 
 export type CommandeWithRelations = SerializedCommandes & {
   utilisateurs: utilisateurs;

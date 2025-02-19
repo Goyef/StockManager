@@ -24,12 +24,13 @@ import UtilisateursList, {
 } from "@/components/utilisateurs/utilisateursList";
 
 export default function Page() {
-  const { user, loading } = useAuth();
+  const { user, loading, utilisateur } = useAuth();
 
   const UtilisateursListRef = useRef<UtilisateurListRef>(null);
 
   if (loading) return <p>Chargement...</p>;
 
+  const userType = String(utilisateur?.id_role)
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -41,12 +42,16 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                  <BreadcrumbPage>Mettre admin les Utilisateurs</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
+        {userType !== '1' && (
+          <div> Seul les administrateurs peuvent effectuer des actions ici </div>
+        )}
+        {userType === '1' && (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <Card className="border-none">
             <CardHeader>
@@ -61,6 +66,7 @@ export default function Page() {
             </CardContent>
           </Card>
         </div>
+        )}
       </SidebarInset>
     </SidebarProvider>
   );

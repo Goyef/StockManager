@@ -71,9 +71,13 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
-  const { user, loading } = useAuth();
+  const { user, loading, utilisateur } = useAuth();
 
   if (loading) return <p>Chargement...</p>;
+
+
+  const userType = String(utilisateur?.id_role)
+  
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -113,12 +117,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         >
           Commandes en attente
         </button>
-        <button
-          type="button"
-          onClick={() => router.push("/dashboard/commandesAdmin")}
-        >
-          Commandes admin
-        </button>
+      
         <button type="button" onClick={() => router.push("/dashboard/stocks")}>
           Stocks
         </button>
@@ -134,6 +133,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         >
           Promotion de rôles utilisateur
         </button>
+        {userType === '1' && (
+          <p>Rôle de l'utilisateur : admin</p>
+        )}
+           {userType === '2' && (
+          <p>Rôle de l'utilisateur : utilisateur</p>
+        )}
+        
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

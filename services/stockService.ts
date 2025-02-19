@@ -40,7 +40,7 @@ export async function CreateStocks(data: {
       data: {
         nom: data.nom,
         description: data.description,
-        quantite_disponible: parseInt("1", 10),
+        quantite_disponible: parseInt("0", 10),
         type: data.type,
       },
     });

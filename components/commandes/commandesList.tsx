@@ -13,7 +13,6 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { stocks, utilisateurs } from "@prisma/client";
 import { SerializedCommandes } from "@/services/commandeService";
-import { comma } from "postcss/lib/list";
 import { useAuth } from "@/context/AuthContext";
 
 export type CommandeWithRelations = SerializedCommandes & {
@@ -26,16 +25,9 @@ export type CommandeListRef = {
 };
 
 const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
-  const queryClient = useQueryClient();
+ 
   const { toast } = useToast();
-  const { user } = useAuth();
-  const [editingCommande, setEditingCommande] =
-    useState<CommandeWithRelations | null>(null);
-  const [editData, setEditData] = useState({
-    quantite: 0,
-    date_commande: "",
-    id_stock: 0,
-  });
+  const { user,loading,utilisateur } = useAuth();
 
   const {
     data: commandes,
@@ -43,8 +35,8 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
     error,
     refetch,
   } = useQuery<CommandeWithRelations[], Error>({
-    queryKey: ["commandes"],
-    queryFn: () => fetch("/api/commandes").then((res) => res.json()),
+    queryKey: ["commandes",utilisateur?.id_utilisateur],
+    queryFn: () => fetch(`/api/commandes?email=${utilisateur?.email}`).then((res) => res.json()),
   });
 
   const handleDelete = async (id: number) => {
@@ -64,8 +56,6 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
       console.error("Erreur lors de la suppression:", error);
     }
   };
-  // test
-
   // Expose la méthode `refresh` au composant parent
   useImperativeHandle(ref, () => ({
     refresh: refetch,
@@ -115,13 +105,7 @@ const CommandeList = forwardRef<CommandeListRef>((_, ref) => {
               <TableCell>
                 {String(commande.statut) === "en_attente" && (
                   <div className="flex space-x-2">
-                    {/* <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleEdit(commande)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button> */}
+                   
                     <Button
                       variant="ghost"
                       size="icon"

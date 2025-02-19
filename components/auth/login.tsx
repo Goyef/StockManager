@@ -34,6 +34,7 @@ export default function Login() {
 
     if (result) {
       await handleRevalidate();
+      location.reload();
       router.push("/");
     } else {
       toast({

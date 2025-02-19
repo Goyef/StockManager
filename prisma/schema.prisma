@@ -67,9 +67,9 @@ model commandes {
   id_utilisateur BigInt
   date_commande  DateTime     @default(now()) @db.Timestamp(6)
   statut         statut       @default(en_attente)
-  quantite       BigInt       @default(1) @map("quantite")
+  quantite       BigInt
   id_stock       BigInt
-  stocks         stocks       @relation(fields: [id_stock], references: [id_stock])
+  stocks         stocks       @relation(fields: [id_stock], references: [id_stock], onDelete: SetNull)
   utilisateurs   utilisateurs @relation(fields: [id_utilisateur], references: [id_utilisateur], onDelete: SetNull)
   mouvements     mouvements[]
 }
@@ -95,8 +95,8 @@ model stocks {
   id_stock            BigInt       @id @default(autoincrement())
   nom                 String       @db.VarChar
   description         String       @db.VarChar
-  quantite_disponible BigInt       @default(0)
   type                type
+  quantite_disponible BigInt?      @default(0)
   commandes           commandes[]
   mouvements          mouvements[]
 }

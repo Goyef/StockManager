@@ -18,9 +18,10 @@ export interface SerializedCommandes {
   quantite: number;
 }
 
-export async function GetAllCommandes(): Promise<SerializedCommandes[]> {
+export async function GetAllCommandes(id_utilisateur: bigint): Promise<SerializedCommandes[]> {
   try {
     const commandes = await prisma.commandes.findMany({
+      where: { id_utilisateur: id_utilisateur },
       include: {
         utilisateurs: true,
         stocks: true,
@@ -81,6 +82,7 @@ export async function CreateCommande(data: {
   id_stock: string;
 }): Promise<SerializedCommandes | null> {
   try {
+    console.log("data",data)
     const commande = await prisma.commandes.create({
       data: {
         id_utilisateur: parseInt(data.id_utilisateur, 10),
@@ -121,6 +123,9 @@ export async function CreateCommandeAdmin(data: {
     if (!stock) {
       throw new Error("Stock non trouvée.");
     }
+
+    if (stock.quantite_disponible === null )
+      throw new Error("Quantité non valide.");
     await prisma.stocks.update({
       where: { id_stock: BigInt(data.id_stock) },
       data: {
@@ -145,61 +150,55 @@ export async function CreateCommandeAdmin(data: {
 }
 export async function UpdateStatutCommande(data: {
   id_commande: number;
-  id_utilisateur?: string;
-  statut?: $Enums.statut;
-  date_commande?: Date;
+  statut: $Enums.statut;
   id_stock?: string;
   quantite?: string;
 }): Promise<SerializedCommandes | null> {
   try {
-    const updateData: Partial<commandes> = {};
-
-    if (data.id_utilisateur !== undefined) {
-      updateData.id_utilisateur = BigInt(data.id_utilisateur);
-    }
-    if (data.statut !== undefined) {
-      updateData.statut = data.statut;
-    }
-    if (data.date_commande !== undefined) {
-      updateData.date_commande = new Date(data.date_commande);
-    }
-    if (data.id_stock !== undefined) {
-      updateData.id_stock = BigInt(data.id_stock);
-    }
-    if (data.quantite !== undefined) {
-      updateData.quantite = BigInt(data.quantite);
-    }
-
-    if (data.statut === "validee" && data.id_stock && data.quantite) {
-      const stock = await prisma.stocks.findUnique({
-        where: { id_stock: BigInt(data.id_stock) },
-      });
-
-      if (!stock) {
-        throw new Error("Stock non trouvée.");
+      const updateData: Partial<commandes> = {};
+      
+      if (data.statut !== undefined) {
+          updateData.statut = data.statut;
       }
-
-      if (stock.quantite_disponible < BigInt(data.quantite)) {
-        throw new Error("Quantité non valide.");
+      
+      if (data.id_stock !== undefined) {
+          updateData.id_stock = BigInt(data.id_stock);
       }
-
-      await prisma.stocks.update({
-        where: { id_stock: BigInt(data.id_stock) },
-        data: {
-          quantite_disponible:
-            stock.quantite_disponible - BigInt(data.quantite),
-        },
-      });
-
-      await prisma.mouvements.create({
-        data: {
-          id_stock: BigInt(data.id_stock),
-          type_mouvement: "sortie",
-          quantite: BigInt(data.quantite),
-          id_commande: BigInt(data.id_commande),
-        },
-      });
-    }
+      if (data.quantite !== undefined) {
+          updateData.quantite = BigInt(data.quantite);
+      }
+      
+      if (data.statut === "validee" && data.id_stock && data.quantite) {
+          const stock = await prisma.stocks.findUnique({
+              where: { id_stock: BigInt(data.id_stock) },
+          });
+          
+          if (!stock) {
+              throw new Error("Stock non trouvée.");
+          }
+          
+          if (stock.quantite_disponible === null || stock.quantite_disponible < BigInt(data.quantite)) {
+              throw new Error("Quantité non valide.");
+          }
+          console.log("data quantité", BigInt(data.quantite))
+          console.log("quantité dispo ", stock.quantite_disponible)
+          await prisma.stocks.update({
+              where: { id_stock: BigInt(data.id_stock) },
+              data: {
+                  quantite_disponible:
+                  stock.quantite_disponible - BigInt(data.quantite),
+              },
+          });
+          
+          await prisma.mouvements.create({
+              data: {
+                  id_stock: BigInt(data.id_stock),
+                  type_mouvement: "sortie",
+                  quantite: BigInt(data.quantite),
+                  id_commande: BigInt(data.id_commande),
+              },
+          });
+      }
 
     const updatedCommande = await prisma.commandes.update({
       where: { id_commande: BigInt(data.id_commande) },

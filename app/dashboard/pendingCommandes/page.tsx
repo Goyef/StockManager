@@ -1,9 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import BookingsList, {
-  BookingListRef,
-} from "@/components/bookings/bookingsList";
+
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
@@ -14,26 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
-import { Plus } from "lucide-react";
-import {
-  BookingForm,
-  BookingFormSchema,
-} from "@/components/bookings/bookingForm";
-import { cn } from "@/lib/utils";
-import { z } from "zod";
+
 import { useToast } from "@/hooks/use-toast";
 
 import PendingMouvementList, {
@@ -42,13 +28,13 @@ import PendingMouvementList, {
 import PendingCommandeList from "@/components/commandes/pendingCommandeList";
 
 export default function Page() {
-  const { user, loading } = useAuth();
+  const { user, loading, utilisateur } = useAuth();
   const { toast } = useToast();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const PendingCommandeListRef = useRef<PendingCommandeListRef>(null);
 
+  const userType = String(utilisateur?.id_role)
   if (loading) return <p>Chargement...</p>;
 
   return (
@@ -62,12 +48,16 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                  <BreadcrumbPage>Mouvements</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
+        {userType !== '1' && (
+          <div> Seul les administrateurs peuvent effectuer des actions ici </div>
+        )}
+        {userType === '1' && (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <Card className="border-none">
             <CardHeader>
@@ -82,6 +72,7 @@ export default function Page() {
             </CardContent>
           </Card>
         </div>
+        )}
       </SidebarInset>
     </SidebarProvider>
   );

@@ -14,7 +14,6 @@ export interface SerializedMouvements {
   type_mouvement: type_mouvement;
   quantite: number;
   date_mouvement: string;
-  id_commande: number;
 }
 
 export async function GetAllMouvements(): Promise<SerializedMouvements[]> {

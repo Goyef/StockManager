@@ -82,7 +82,7 @@ export async function CreateUtilisateurs(data: {
   password: any;
   nom: string;
   email: string;
-}): Promise<utilisateurs> {
+}): Promise<SerializedUtilisateurs> {
   try {
     const utilisateurs = await prisma.utilisateurs.create({
       data: {
@@ -93,7 +93,10 @@ export async function CreateUtilisateurs(data: {
         id_role: 2,
       },
     });
-    return utilisateurs;
+    const serializedUtilisateurs: SerializedUtilisateurs = JSON.parse(
+      JSONbig.stringify(utilisateurs)
+    );
+    return serializedUtilisateurs;
   } catch (error) {
     console.error("Error creating user:", error);
     throw new Error("Failed to create user");

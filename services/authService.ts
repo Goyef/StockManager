@@ -75,6 +75,7 @@ export const signupUserByEmailAndPassword = async (
   }
 };
 
+
 export const getUser = async (): Promise<User | null> => {
   const {
     data: { user },

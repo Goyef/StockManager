@@ -1,9 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import BookingsList, {
-  BookingListRef,
-} from "@/components/bookings/bookingsList";
+
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
   Breadcrumb,
@@ -28,10 +26,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/AuthContext";
 import { Plus } from "lucide-react";
-import {
-  BookingForm,
-  BookingFormSchema,
-} from "@/components/bookings/bookingForm";
+
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
@@ -39,7 +34,7 @@ import StockList, { StockListRef } from "@/components/stocks/stocksList";
 import { StockForm, StockFormSchema } from "@/components/stocks/stockForm";
 
 export default function Page() {
-  const { user, loading } = useAuth();
+  const { user, loading,utilisateur } = useAuth();
   const { toast } = useToast();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -73,6 +68,7 @@ export default function Page() {
   };
 
   if (loading) return <p>Chargement...</p>;
+  
 
   return (
     <SidebarProvider>
@@ -85,7 +81,7 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                  <BreadcrumbPage>Stocks</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>

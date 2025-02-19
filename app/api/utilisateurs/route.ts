@@ -2,7 +2,7 @@ import {
   CreateUtilisateurs,
   GetAllUtilisateurs,
 } from "@/services/utilisateurService";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -29,9 +29,10 @@ export async function POST(request: Request) {
       email,
       password,
     });
-
+    
     return NextResponse.json({ success: true, utilisateur });
   } catch (error) {
+    console.error("Erreur lors de la création de l'utilisateur:", error);
     return NextResponse.json(
       { success: false, error: "Erreur lors de la création de l'utilisateur" },
       { status: 500 }

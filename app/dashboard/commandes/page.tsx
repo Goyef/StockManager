@@ -37,10 +37,11 @@ import {
 } from "@/components/commandes/commandeForm";
 
 export default function Page() {
-  const { user, loading } = useAuth();
+  const { user, loading, utilisateur } = useAuth();
   const { toast } = useToast();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogCommandeOpen, setIsDialogCommandeOpen] = useState(false)
 
   const CommandeListRef = useRef<CommandeListRef>(null);
 
@@ -48,14 +49,52 @@ export default function Page() {
     setIsDialogOpen(true);
   };
 
+
+  const handleNewCommandeAdmin = () => {
+    setIsDialogCommandeOpen(true)
+  }
+
+  const handleFormSubmitAdmin = async (data: z.infer<typeof CommandeFormSchema>) => {
+    try {
+      const updateData = {
+        ...data,
+        id_utilisateur : utilisateur?.id_utilisateur 
+      }
+      await fetch("/api/commandesAdmin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      setIsDialogCommandeOpen(false);
+      toast({
+        title: "Success",
+        description: "Commande créée",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Commande non crée",
+        variant: "destructive",
+      });
+      
+    }
+  };
   const handleFormSubmit = async (data: z.infer<typeof CommandeFormSchema>) => {
     try {
+      const updateData = {
+        ...data,
+        id_utilisateur : utilisateur?.id_utilisateur 
+      }
       await fetch("/api/commandes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(updateData),
       });
 
       setIsDialogOpen(false);
@@ -71,7 +110,7 @@ export default function Page() {
   };
 
   if (loading) return <p>Chargement...</p>;
-
+  const userType = String(utilisateur?.id_role)
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -83,7 +122,7 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                  <BreadcrumbPage>Commandes</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -95,6 +134,31 @@ export default function Page() {
               <CardTitle>
                 <div className="flex justify-between">
                   <h2>Commandes sortie</h2>
+
+                  {userType === '1' && (
+                    <Dialog open={isDialogCommandeOpen} onOpenChange={setIsDialogCommandeOpen}>
+                      <DialogTrigger asChild>
+                        <Button onClick={handleNewCommandeAdmin}>
+                          <Plus /> Ajouter du stock (admin)
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent
+                        className={cn(
+                          "sm:max-w-[600px] w-full max-h-[90vh]",
+                          "overflow-y-auto"
+                        )}
+                      >
+                        <DialogHeader>
+                          <DialogTitle>Nouvelle commande de stock admin</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid py-4 gap-4">
+                          <CommandeForm onFormSubmit={handleFormSubmitAdmin} />
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+
+
                   <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                       <Button onClick={handleNewCommande}>
