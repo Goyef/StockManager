@@ -2,13 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { UpdateStatutCommande } from "@/services/commandeService";
 import { $Enums } from "@prisma/client";
 
+type routeContext = {
+  params: Promise<{ id: number }>
+};
+
+
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: number } }
+  context: routeContext
 ) {
   try {
-    const { id } = await params;
-
+    const params = await context.params;
+    const { id } = params
     if (!id) {
       return NextResponse.json(
         { error: "Commande ID is required." },

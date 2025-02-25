@@ -1,6 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Booking, User, Apartment, stocks } from "@prisma/client";
 import {
   Table,
   TableBody,

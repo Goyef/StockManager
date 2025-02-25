@@ -1,4 +1,4 @@
-import { $Enums, Booking, commandes, PrismaClient, User } from "@prisma/client";
+import { $Enums, commandes, PrismaClient } from "@prisma/client";
 import JSONbig from "json-bigint";
 
 const prisma = new PrismaClient();
@@ -33,7 +33,7 @@ export async function GetAllCommandes(id_utilisateur: bigint): Promise<Serialize
 
     return serializedCommandes;
   } catch (error) {
-    console.error(error);
+ 
     throw new Error("Failed to fetch commandes");
   }
 }
@@ -58,23 +58,6 @@ export async function GetPendingCommandes(): Promise<SerializedCommandes[]> {
     throw new Error("Failed to fetch commandes");
   }
 }
-export async function GetCommandegById(
-  id_commande: number
-): Promise<commandes> {
-  try {
-    const commande = await prisma.commandes.findUnique({
-      where: {
-        id_commande: id_commande,
-      },
-    });
-    if (!commande) {
-      throw new Error(`Commande with ID ${id_commande} not found`);
-    }
-    return commande;
-  } catch (error) {
-    throw new Error("Failed to fetch commande by ID");
-  }
-}
 
 export async function CreateCommande(data: {
   id_utilisateur: string;
@@ -82,7 +65,6 @@ export async function CreateCommande(data: {
   id_stock: string;
 }): Promise<SerializedCommandes | null> {
   try {
-    console.log("data",data)
     const commande = await prisma.commandes.create({
       data: {
         id_utilisateur: parseInt(data.id_utilisateur, 10),
@@ -156,18 +138,15 @@ export async function UpdateStatutCommande(data: {
 }): Promise<SerializedCommandes | null> {
   try {
       const updateData: Partial<commandes> = {};
-      
       if (data.statut !== undefined) {
           updateData.statut = data.statut;
       }
-      
       if (data.id_stock !== undefined) {
           updateData.id_stock = BigInt(data.id_stock);
       }
       if (data.quantite !== undefined) {
           updateData.quantite = BigInt(data.quantite);
       }
-      
       if (data.statut === "validee" && data.id_stock && data.quantite) {
           const stock = await prisma.stocks.findUnique({
               where: { id_stock: BigInt(data.id_stock) },
@@ -180,8 +159,6 @@ export async function UpdateStatutCommande(data: {
           if (stock.quantite_disponible === null || stock.quantite_disponible < BigInt(data.quantite)) {
               throw new Error("Quantité non valide.");
           }
-          console.log("data quantité", BigInt(data.quantite))
-          console.log("quantité dispo ", stock.quantite_disponible)
           await prisma.stocks.update({
               where: { id_stock: BigInt(data.id_stock) },
               data: {

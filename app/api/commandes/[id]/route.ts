@@ -1,11 +1,16 @@
 import { DeleteCommande } from "@/services/commandeService";
 import { NextRequest, NextResponse } from "next/server";
 
+type routeContext = {
+  params: Promise<{ id: number }>
+};
+
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: number } }
+  context: routeContext
 ) {
   try {
+    const params = await context.params;
     const { id } = await params;
 
     if (!id) {

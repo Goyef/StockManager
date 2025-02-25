@@ -1,4 +1,4 @@
-import { Booking, PrismaClient, stocks, User } from "@prisma/client";
+import { PrismaClient, stocks } from "@prisma/client";
 import JSONbig from "json-bigint";
 
 const prisma = new PrismaClient();

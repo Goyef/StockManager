@@ -8,60 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id         String      @id @default(uuid())
-  email      String      @unique
-  name       String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  apartments Apartment[]
-  bookings   Booking[]
-  reviews    Review[]
-}
-
-model Apartment {
-  id        String    @id @default(uuid())
-  name      String
-  address   String
-  cityId    String
-  ownerId   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  city      City      @relation(fields: [cityId], references: [id])
-  owner     User      @relation(fields: [ownerId], references: [id])
-  bookings  Booking[]
-  reviews   Review[]
-}
-
-model City {
-  id         String      @id @default(uuid())
-  name       String      @unique
-  apartments Apartment[]
-}
-
-model Booking {
-  id          String    @id @default(uuid())
-  startDate   DateTime
-  endDate     DateTime
-  apartmentId String
-  userId      String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
-  user        User      @relation(fields: [userId], references: [id])
-}
-
-model Review {
-  id          String    @id @default(uuid())
-  rating      Int
-  comment     String?
-  apartmentId String
-  userId      String
-  createdAt   DateTime  @default(now())
-  apartment   Apartment @relation(fields: [apartmentId], references: [id])
-  user        User      @relation(fields: [userId], references: [id])
-}
-
 model commandes {
   id_commande    BigInt       @id @default(autoincrement())
   id_utilisateur BigInt
