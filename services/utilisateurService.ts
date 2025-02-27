@@ -1,6 +1,5 @@
 import {
   PrismaClient,
-  stocks,
   utilisateurs,
 } from "@prisma/client";
 import JSONbig from "json-bigint";

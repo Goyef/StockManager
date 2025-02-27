@@ -22,14 +22,13 @@ import { useAuth } from "@/context/AuthContext";
 
 import { useToast } from "@/hooks/use-toast";
 
-import PendingMouvementList, {
+import  {
   PendingCommandeListRef,
 } from "@/components/commandes/pendingCommandeList";
 import PendingCommandeList from "@/components/commandes/pendingCommandeList";
 
 export default function Page() {
   const { user, loading, utilisateur } = useAuth();
-  const { toast } = useToast();
 
 
   const PendingCommandeListRef = useRef<PendingCommandeListRef>(null);
@@ -48,14 +47,14 @@ export default function Page() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Mouvements</BreadcrumbPage>
+                  <BreadcrumbPage>Commandes en attente</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
         {userType !== '1' && (
-          <div> Seul les administrateurs peuvent effectuer des actions ici </div>
+          <div className="ml-6"> Seul les administrateurs peuvent effectuer des actions ici </div>
         )}
         {userType === '1' && (
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

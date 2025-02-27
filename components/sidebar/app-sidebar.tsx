@@ -28,29 +28,16 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "FAQ",
-      url: "#",
-      icon: CircleHelp,
-    },
+   
   ],
   projects: [],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const router = useRouter();
-  const { user, loading, utilisateur } = useAuth();
+  const { user, loading,utilisateur } = useAuth();
 
   if (loading) return <p>Chargement...</p>;
-
-
-  const userType = String(utilisateur?.id_role)
-  
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -106,12 +93,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         >
           Promotion de rôles utilisateur
         </button>
-        {userType === '1' && (
-          <p>Rôle de l'utilisateur : admin</p>
-        )}
-           {userType === '2' && (
-          <p>Rôle de l'utilisateur : utilisateur</p>
-        )}
+       
         <NavSecondary items={data.navSecondary} className="mt-auto" />
         
         
